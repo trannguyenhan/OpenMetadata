@@ -27,6 +27,7 @@ import static org.openmetadata.service.util.TestUtils.TEST_USER_NAME;
 import static org.openmetadata.service.util.TestUtils.UpdateType.CHANGE_CONSOLIDATED;
 import static org.openmetadata.service.util.TestUtils.UpdateType.MINOR_UPDATE;
 import static org.openmetadata.service.util.TestUtils.assertEntityPagination;
+import static org.openmetadata.service.util.TestUtils.assertEventually;
 import static org.openmetadata.service.util.TestUtils.assertListNotEmpty;
 import static org.openmetadata.service.util.TestUtils.assertListNotNull;
 import static org.openmetadata.service.util.TestUtils.assertListNull;
@@ -693,7 +694,11 @@ public class TestCaseResourceTest extends EntityResourceTest<TestCase, CreateTes
                 .withTimestamp(TestUtils.dateToTimestamp(String.format("2021-09-%02d", i)));
         putTestCaseResult(testCase.getFullyQualifiedName(), testCaseResult, ADMIN_AUTH_HEADERS);
       }
-      validateEntityListFromSearchWithPagination(new HashMap<>(), testCases.size());
+      assertEventually(
+          testInfo.getDisplayName(),
+          () -> {
+            validateEntityListFromSearchWithPagination(new HashMap<>(), testCases.size());
+          });
     }
   }
 
