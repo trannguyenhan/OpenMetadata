@@ -109,6 +109,26 @@ const CustomNodeV1 = (props: NodeProps) => {
     }
   }, [node, isNewNode, label, selected, isEditMode]);
 
+  const classBorderName = useMemo(() => {
+    if (selected) {
+      return '';
+    }
+    if (!node) {
+      return '';
+    }
+
+    let classBorder = 'lineage-node-' + node.type;
+
+    if (node.name?.startsWith('task_')) {
+      classBorder += '-task';
+    }
+    if (node.name?.startsWith('job_')) {
+      classBorder += '-job';
+    }
+
+    return classBorder;
+  }, [node, selected]);
+
   useEffect(() => {
     updateNodeInternals(id);
     if (!isExpanded) {
@@ -130,6 +150,7 @@ const CustomNodeV1 = (props: NodeProps) => {
     <div
       className={classNames(
         'lineage-node p-0',
+        classBorderName,
         selected || data.selected
           ? 'custom-node-header-active'
           : 'custom-node-header-normal',

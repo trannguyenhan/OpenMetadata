@@ -15,7 +15,7 @@ import { Col, Row, Space, Typography } from 'antd';
 import { EntityLineageNodeType } from 'enums/entity.enum';
 import { EntityReference } from 'generated/entity/type';
 import { get } from 'lodash';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getBreadcrumbsFromFqn } from 'utils/EntityUtils';
 import { getEntityIcon } from 'utils/TableUtils';
@@ -70,6 +70,22 @@ const LineageNodeLabelV1 = ({ node }: { node: EntityReference }) => {
   const { t } = useTranslation();
   const breadcrumbs = getBreadcrumbsFromFqn(node.fullyQualifiedName ?? '');
 
+  const nameBreadcumbs = useMemo(() => {
+    let nameBreadcum = '';
+    if (node.type === 'table') {
+      nameBreadcum += ' TABLE';
+    } else {
+      if (node.name?.startsWith('task_')) {
+        nameBreadcum += ' TASK';
+      }
+      if (node.name?.startsWith('job_')) {
+        nameBreadcum += ' JOB';
+      }
+    }
+
+    return nameBreadcum;
+  }, [node]);
+
   return (
     <div className="w-72">
       <div className="m-0 p-x-md p-y-xs">
@@ -78,20 +94,30 @@ const LineageNodeLabelV1 = ({ node }: { node: EntityReference }) => {
           align="start"
           className="lineage-breadcrumb m-b-xs w-full"
           size={4}>
-          {breadcrumbs.map((breadcrumb, index) => (
-            <React.Fragment key={index}>
-              <Typography.Text
-                className="text-grey-muted lineage-breadcrumb-item"
-                ellipsis={{ tooltip: true }}>
-                {breadcrumb.name}
-              </Typography.Text>
-              {index !== breadcrumbs.length - 1 && (
-                <Typography.Text className="text-xss">
-                  {t('label.slash-symbol')}
+          {nameBreadcumbs !== '' ? (
+            <Typography.Text
+              className="text-grey-muted lineage-breadcrumb-item"
+              ellipsis={{ tooltip: true }}>
+              {nameBreadcumbs}
+            </Typography.Text>
+          ) : (
+            breadcrumbs.map((breadcrumb, index) => (
+              <React.Fragment key={index}>
+                <Typography.Text
+                  className="text-grey-muted lineage-breadcrumb-item"
+                  ellipsis={{ tooltip: true }}>
+                  {breadcrumb.name === 'CustomPipeline'
+                    ? 'DAG'
+                    : breadcrumb.name}
                 </Typography.Text>
-              )}
-            </React.Fragment>
-          ))}
+                {index !== breadcrumbs.length - 1 && (
+                  <Typography.Text className="text-xss">
+                    {t('label.slash-symbol')}
+                  </Typography.Text>
+                )}
+              </React.Fragment>
+            ))
+          )}
         </Space>
         <div className="flex items-center">
           <EntityLabel node={node} />

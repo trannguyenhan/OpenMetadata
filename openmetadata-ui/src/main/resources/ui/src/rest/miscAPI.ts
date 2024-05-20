@@ -119,6 +119,7 @@ export const getSuggestions = <T extends SearchIndex>(
       SearchIndex.CONTAINER,
       SearchIndex.GLOSSARY,
       SearchIndex.TAG,
+      SearchIndex.TEST_CASE,
     ],
   };
 
