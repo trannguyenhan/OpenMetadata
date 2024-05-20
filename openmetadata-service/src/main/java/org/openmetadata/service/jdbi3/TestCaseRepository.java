@@ -210,7 +210,8 @@ public class TestCaseRepository extends EntityRepository<TestCase> {
         testCaseResult.getTimestamp());
 
     setFieldsInternal(testCase, new EntityUtil.Fields(allowedFields, TEST_SUITE_FIELD));
-    setTestSuiteSummary(testCase, testCaseResult.getTimestamp(), testCaseResult.getTestCaseStatus());
+    setTestSuiteSummary(
+        testCase, getTestSuites(testCase), testCaseResult.getTimestamp(), testCaseResult.getTestCaseStatus());
     ChangeDescription change = addTestCaseChangeDescription(testCase.getVersion(), testCaseResult);
     ChangeEvent changeEvent =
         getChangeEvent(updatedBy, withHref(uriInfo, testCase), change, entityType, testCase.getVersion());
@@ -257,6 +258,31 @@ public class TestCaseRepository extends EntityRepository<TestCase> {
     daoCollection
         .testSuiteDAO()
         .update(testSuite.getId(), testSuite.getFullyQualifiedName(), JsonUtils.pojoToJson(testSuite));
+  }
+
+  private void setTestSuiteSummary(
+      TestCase testCase, List<TestSuite> testSuites, Long timestamp, TestCaseStatus testCaseStatus) {
+    ResultSummary resultSummary =
+        new ResultSummary()
+            .withTestCaseName(testCase.getFullyQualifiedName())
+            .withStatus(testCaseStatus)
+            .withTimestamp(timestamp);
+    for (TestSuite testSuite : testSuites) {
+
+      List<ResultSummary> resultSummaries = listOrEmpty(testSuite.getTestCaseResultSummary());
+      if (resultSummaries.isEmpty()) {
+        resultSummaries.add(resultSummary);
+      } else {
+        // We'll remove the existing summary for this test case and add the new one
+        resultSummaries.removeIf(summary -> summary.getTestCaseName().equals(resultSummary.getTestCaseName()));
+        resultSummaries.add(resultSummary);
+      }
+
+      testSuite.setTestCaseResultSummary(resultSummaries);
+      daoCollection
+          .testSuiteDAO()
+          .update(testSuite.getId(), testSuite.getFullyQualifiedName(), JsonUtils.pojoToJson(testSuite));
+    }
   }
 
   private ChangeDescription addTestCaseChangeDescription(Double version, Object newValue) {

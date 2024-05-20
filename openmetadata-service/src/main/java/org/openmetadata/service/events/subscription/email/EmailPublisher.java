@@ -17,6 +17,7 @@ import static org.openmetadata.schema.api.events.CreateEventSubscription.Subscri
 import static org.openmetadata.service.events.subscription.AlertsRuleEvaluator.getEntity;
 import static org.openmetadata.service.util.SubscriptionUtil.buildReceiversListFromActions;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.openmetadata.schema.EntityInterface;
 import org.openmetadata.schema.alert.type.EmailAlertConfig;
 import org.openmetadata.schema.entity.events.EventSubscription;
 import org.openmetadata.schema.type.ChangeEvent;
+import org.openmetadata.schema.type.EventType;
 import org.openmetadata.service.events.errors.EventPublisherException;
 import org.openmetadata.service.events.subscription.SubscriptionPublisher;
 import org.openmetadata.service.exception.CatalogExceptionMessage;
@@ -66,8 +68,9 @@ public class EmailPublisher extends SubscriptionPublisher {
       try {
         Set<String> receivers = buildReceiversList(event);
         EmailMessage emailMessage = emailDecorator.buildMessage(event);
+        String titleTemplate = titleBuilder(event);
         for (String email : receivers) {
-          EmailUtil.sendChangeEventMail(email, emailMessage);
+          EmailUtil.sendChangeEventMail(email, titleTemplate, emailMessage);
         }
         setSuccessStatus(System.currentTimeMillis());
       } catch (Exception e) {
@@ -77,6 +80,45 @@ public class EmailPublisher extends SubscriptionPublisher {
         throw new EventPublisherException(message);
       }
     }
+  }
+
+  private String titleBuilder(ChangeEvent event) {
+    String name = event.getEntityFullyQualifiedName();
+    Object entity = event.getEntity();
+    if (entity != null) {
+      Class<?> aClass = entity.getClass();
+      try {
+        Field nameField = aClass.getDeclaredField("name");
+        nameField.setAccessible(true);
+        name = (String) nameField.get(entity);
+      } catch (Exception ignored) {
+
+      }
+    }
+
+    return "%s " + event.getEntityType() + " " + name + " " + eventBuilder(event);
+  }
+
+  private String eventBuilder(ChangeEvent event) {
+    if (event.getEventType() == EventType.ENTITY_CREATED) {
+      return "Created";
+    }
+    if (event.getEventType() == EventType.ENTITY_UPDATED) {
+      return "Updated";
+    }
+    if (event.getEventType() == EventType.ENTITY_DELETED) {
+      return "Deleted";
+    }
+    if (event.getEventType() == EventType.ENTITY_RESTORED) {
+      return "Restored";
+    }
+    if (event.getEventType() == EventType.ENTITY_NO_CHANGE) {
+      return "No Change";
+    }
+    if (event.getEventType() == EventType.ENTITY_SOFT_DELETED) {
+      return "Deleted";
+    }
+    return "Change";
   }
 
   private Set<String> buildReceiversList(ChangeEvent changeEvent) {

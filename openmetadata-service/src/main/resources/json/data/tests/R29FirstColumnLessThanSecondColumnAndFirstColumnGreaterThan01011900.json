@@ -1,0 +1,44 @@
+{
+    "name": "R29FirstColumnLessThanSecondColumnAndFirstColumnGreaterThan01011900",
+    "displayName": "R29 First Column Less Than Second Column And First Column Greater Than 01-01-1900",
+    "description": "Check that First Column Less Than Second Column And First Column Greater Than 01-01-1900.",
+    "entityType": "TABLE",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [
+        "NUMBER",
+        "INT",
+        "FLOAT",
+        "DOUBLE",
+        "DECIMAL",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "BYTEINT",
+        "BYTES",
+        "STRING",
+        "MEDIUMTEXT",
+        "TEXT",
+        "CHAR",
+        "VARCHAR"
+    ],
+    "parameterDefinition": [
+        {
+            "name": "firstColumn",
+            "displayName": "First column",
+            "dataType": "STRING",
+            "description": "First column to test",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumn",
+            "displayName": "Second column",
+            "dataType": "STRING",
+            "description": "Second Column to test.",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

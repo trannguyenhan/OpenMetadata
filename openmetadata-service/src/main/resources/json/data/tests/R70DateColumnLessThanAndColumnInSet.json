@@ -1,0 +1,60 @@
+{
+    "name": "R70DateColumnLessThanAndColumnInSet",
+    "displayName": "R70 Date Column Less Than And Column In Set",
+    "description": "Check that the Date column is less than X years and the second column in the set has an error.",
+    "entityType": "TABLE",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [
+        "NUMBER",
+        "INT",
+        "FLOAT",
+        "DOUBLE",
+        "DECIMAL",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "BYTEINT",
+        "BYTES",
+        "STRING",
+        "MEDIUMTEXT",
+        "TEXT",
+        "CHAR",
+        "VARCHAR"
+    ],
+    "parameterDefinition": [
+        {
+            "name": "dateColumn",
+            "displayName": "Date column",
+            "dataType": "STRING",
+            "description": "Date column to check X years.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "yearTestDateColumn",
+            "displayName": "Number of years",
+            "dataType": "INT",
+            "description": "Number of years to check with Date column.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumn",
+            "displayName": "Second column",
+            "dataType": "STRING",
+            "description": "The Column to test in set.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumnTestValues",
+            "displayName": "Values to test with Second column",
+            "dataType": "STRING",
+            "description": "the set of Values to test with Second column. Separated by |. For example: CCCD|CMTND.",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

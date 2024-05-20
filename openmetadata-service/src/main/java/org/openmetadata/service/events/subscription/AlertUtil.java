@@ -133,7 +133,10 @@ public final class AlertUtil {
           func.setParamAdditionalContext(paramAdditionalContext.withData(getEntitiesIndex(Entity.getEntityList())));
           break;
         case matchAnyEventType:
-          List<String> eventTypes = Stream.of(EventType.values()).map(EventType::value).collect(Collectors.toList());
+          List<String> eventTypes =
+              Stream.of(EventType.ENTITY_UPDATED, EventType.ENTITY_DELETED)
+                  .map(EventType::value)
+                  .collect(Collectors.toList());
           func.setParamAdditionalContext(paramAdditionalContext.withData(new HashSet<>(eventTypes)));
           break;
         case matchIngestionPipelineState:

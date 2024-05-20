@@ -325,12 +325,29 @@ public class TestCaseResource extends EntityResource<TestCase, TestCaseRepositor
     // Override OperationContext to change the entity to table and operation from CREATE to EDIT_TESTS
     EntityLink entityLink = EntityLink.parse(create.getEntityLink());
     TestCase test = getTestCase(create, securityContext.getUserPrincipal().getName(), entityLink);
+
+    //    boolean isExist = isExist(create, test);
+    //    if (isExist) {
+    //      return Response.status(CONFLICT)
+    //          .type(MediaType.APPLICATION_JSON_TYPE)
+    //          .entity(new ErrorMessage(CONFLICT.getStatusCode(), CatalogExceptionMessage.ENTITY_ALREADY_EXISTS))
+    //          .build();
+    //    }
     OperationContext operationContext = new OperationContext(Entity.TABLE, MetadataOperation.EDIT_TESTS);
     ResourceContextInterface resourceContext = TestCaseResourceContext.builder().entityLink(entityLink).build();
     authorizer.authorize(securityContext, operationContext, resourceContext);
     repository.isTestSuiteExecutable(create.getTestSuite());
     test = addHref(uriInfo, repository.create(uriInfo, test));
     return Response.created(test.getHref()).entity(test).build();
+  }
+
+  private boolean isExist(CreateTestCase create, TestCase test) {
+    Fields fields = getFields("testDefinition");
+
+    ListFilter filter = new ListFilter(Include.NON_DELETED).addQueryParam("entityFQN", test.getEntityFQN());
+
+    return repository.listAll(fields, filter).stream()
+        .anyMatch(testCase -> testCase.getTestDefinition().getName().equals(create.getTestDefinition()));
   }
 
   @PATCH

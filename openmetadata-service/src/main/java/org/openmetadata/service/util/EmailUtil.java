@@ -282,7 +282,7 @@ public class EmailUtil {
     }
   }
 
-  public static void sendChangeEventMail(String receiverMail, EmailMessage emailMessaged) {
+  public static void sendChangeEventMail(String receiverMail, String titleTemplate, EmailMessage emailMessaged) {
     if (Boolean.TRUE.equals(getSmtpSettings().getEnableSmtpServer())) {
       Map<String, Object> templatePopulator = new HashMap<>();
       templatePopulator.put(EmailUtil.USERNAME, receiverMail.split("@")[0]);
@@ -296,7 +296,7 @@ public class EmailUtil {
       templatePopulator.put("changeMessage", buff.toString());
       try {
         EmailUtil.sendMail(
-            EmailUtil.getChangeEventTemplate(),
+            EmailUtil.getChangeEventTemplate(titleTemplate),
             templatePopulator,
             receiverMail,
             EmailUtil.EMAIL_TEMPLATE_BASEPATH,
@@ -307,6 +307,10 @@ public class EmailUtil {
     } else {
       LOG.warn(EMAIL_IGNORE_MSG, receiverMail);
     }
+  }
+
+  public static void sendChangeEventMail(String receiverMail, EmailMessage emailMessaged) {
+    sendChangeEventMail(receiverMail, CHANGE_EVENT_UPDATE, emailMessaged);
   }
 
   public static void sendDataInsightEmailNotificationToUser(
@@ -350,8 +354,8 @@ public class EmailUtil {
     return String.format(INVITE_SUBJECT, getSmtpSettings().getEmailingEntity());
   }
 
-  public static String getChangeEventTemplate() {
-    return String.format(CHANGE_EVENT_UPDATE, getSmtpSettings().getEmailingEntity());
+  public static String getChangeEventTemplate(String titleTemplate) {
+    return String.format(titleTemplate, getSmtpSettings().getEmailingEntity());
   }
 
   public static String getTaskAssignmentSubject() {

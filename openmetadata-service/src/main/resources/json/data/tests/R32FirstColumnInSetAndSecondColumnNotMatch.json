@@ -1,0 +1,60 @@
+{
+    "name": "R32FirstColumnInSetAndSecondColumnNotMatch",
+    "displayName": "R32 First Column In Set And Second Column Not Match",
+    "description": "Check first column in set and the second column not match regex.",
+    "entityType": "TABLE",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [
+        "NUMBER",
+        "INT",
+        "FLOAT",
+        "DOUBLE",
+        "DECIMAL",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "BYTEINT",
+        "BYTES",
+        "STRING",
+        "MEDIUMTEXT",
+        "TEXT",
+        "CHAR",
+        "VARCHAR"
+    ],
+    "parameterDefinition": [
+        {
+            "name": "firstColumn",
+            "displayName": "First column",
+            "dataType": "STRING",
+            "description": "the column to test in set.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "testFirstColumnValues",
+            "displayName": "Test First Column Values",
+            "dataType": "STRING",
+            "description": "the set of Values to test with first column. Separated by |. For example: CCCD|CMTND..",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumn",
+            "displayName": "Second column",
+            "dataType": "STRING",
+            "description": "The Column to test match regex.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "testSecondColumnRegex",
+            "displayName": "Regex test second column",
+            "dataType": "STRING",
+            "description": "The REGEX to test with Second column.",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

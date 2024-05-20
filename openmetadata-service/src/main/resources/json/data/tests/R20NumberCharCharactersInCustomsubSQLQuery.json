@@ -1,0 +1,28 @@
+{
+    "name": "R20NumberCharCharactersInCustomsubSQLQuery",
+    "displayName": "R20 Number of CharCharacters in value column in Custom SQLQuery",
+    "description": "Test if Number of CharCharacters in value column in ( select code from refr_mobile_prefix )  error",
+    "entityType": "COLUMN",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [],
+    "parameterDefinition": [
+        {
+            "name": "lengthOfValue",
+            "displayName": "Length of value",
+            "dataType": "INT",
+            "description": "Length of value to test with sql",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "sqlExpression",
+            "displayName": "SQL Expression",
+            "dataType": "STRING",
+            "description": "SQL to get the set. for example select code from refr_mobile_prefix",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

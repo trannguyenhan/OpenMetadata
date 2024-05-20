@@ -1,0 +1,68 @@
+{
+    "name": "R75FirstColumnGreaterThanXYearWithSecondColumnAndThirdColumnInSetRrror",
+    "displayName": "R75 First Column Greater Than X Year With Second Column and Third Column In set error",
+    "description": "Check that First Column Greater Than X Year With Second Column and Third Column In set error.",
+    "entityType": "TABLE",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [
+        "NUMBER",
+        "INT",
+        "FLOAT",
+        "DOUBLE",
+        "DECIMAL",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "BYTEINT",
+        "BYTES",
+        "STRING",
+        "MEDIUMTEXT",
+        "TEXT",
+        "CHAR",
+        "VARCHAR"
+    ],
+    "parameterDefinition": [
+        {
+            "name": "firstColumn",
+            "displayName": "First column",
+            "dataType": "STRING",
+            "description": "First column to test",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumn",
+            "displayName": "Second column",
+            "dataType": "STRING",
+            "description": "Second Column to test.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "thirdColumn",
+            "displayName": "Third column",
+            "dataType": "STRING",
+            "description": "Third Column to test.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "numOfYear",
+            "displayName": "Number of years",
+            "dataType": "INT",
+            "description": "The number of years in the First column is less than first column",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "thirdColumnTestValues",
+            "displayName": "Values to test with third column",
+            "dataType": "STRING",
+            "description": "the set of Values to test with third column. Separated by |. For example: CCCD|CMTND.",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

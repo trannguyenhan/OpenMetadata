@@ -1,0 +1,52 @@
+{
+    "name": "R73FirstColumnGreaterThanSecondColumnAndFirstColumnLessThanXYearWithCurrentDay",
+    "displayName": "R73 First Column Greater Than Second Column and First Column Less Than X Year With CurrentDay",
+    "description": "Check that the First column is greater than the second column and First column Less than X years with current day.",
+    "entityType": "TABLE",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [
+        "NUMBER",
+        "INT",
+        "FLOAT",
+        "DOUBLE",
+        "DECIMAL",
+        "TINYINT",
+        "SMALLINT",
+        "BIGINT",
+        "BYTEINT",
+        "BYTES",
+        "STRING",
+        "MEDIUMTEXT",
+        "TEXT",
+        "CHAR",
+        "VARCHAR"
+    ],
+    "parameterDefinition": [
+        {
+            "name": "firstColumn",
+            "displayName": "First column",
+            "dataType": "STRING",
+            "description": "First column to test",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "secondColumn",
+            "displayName": "Second column",
+            "dataType": "STRING",
+            "description": "Second Column to test.",
+            "required": true,
+            "optionValues": []
+        },
+        {
+            "name": "numOfYear",
+            "displayName": "Number of years",
+            "dataType": "INT",
+            "description": "The number of years in the current time is greater than first column",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.json.JsonPatch;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -54,6 +55,7 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.openmetadata.common.utils.CommonUtil;
 import org.openmetadata.schema.api.events.CreateEventSubscription;
+import org.openmetadata.schema.entity.events.EventFilterRule;
 import org.openmetadata.schema.entity.events.EventSubscription;
 import org.openmetadata.schema.entity.events.SubscriptionStatus;
 import org.openmetadata.schema.type.EntityHistory;
@@ -271,6 +273,13 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
   public Response createEventSubscription(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateEventSubscription request) {
     EventSubscription eventSub = getEventSubscription(request, securityContext.getUserPrincipal().getName());
+    //    boolean isExist = isExist(eventSub);
+    //    if (isExist) {
+    //      return Response.status(CONFLICT)
+    //          .type(MediaType.APPLICATION_JSON_TYPE)
+    //          .entity(new ErrorMessage(CONFLICT.getStatusCode(), CatalogExceptionMessage.ENTITY_ALREADY_EXISTS))
+    //          .build();
+    //    }
     // Only one Creation is allowed
     if (eventSub.getAlertType() == CreateEventSubscription.AlertType.DATA_INSIGHT_REPORT
         && ReportsHandler.getInstance() != null
@@ -280,6 +289,42 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
     Response response = create(uriInfo, securityContext, eventSub);
     repository.addSubscriptionPublisher(eventSub);
     return response;
+  }
+
+  private boolean isExist(EventSubscription eventSub) {
+    boolean isExist = false;
+    EntityUtil.Fields fields = EntityUtil.Fields.EMPTY_FIELDS;
+
+    ListFilter filter =
+        new ListFilter(null)
+            .addQueryParam("alertType", eventSub.getAlertType().value())
+            .addQueryParam("subscriptionType", eventSub.getSubscriptionType().value());
+
+    List<EventSubscription> alerts = repository.listAll(fields, filter);
+    for (EventSubscription alert : alerts) {
+      if (alert.getFilteringRules() == null
+          || alert.getFilteringRules().getResources() == null
+          || alert.getFilteringRules().getRules() == null
+          || eventSub.getFilteringRules() == null
+          || eventSub.getFilteringRules().getResources() == null
+          || eventSub.getFilteringRules().getRules() == null) {
+        continue;
+      }
+      List<String> resources = alert.getFilteringRules().getResources().stream().sorted().collect(Collectors.toList());
+      List<String> resourcesNew =
+          eventSub.getFilteringRules().getResources().stream().sorted().collect(Collectors.toList());
+      if (resources.equals(resourcesNew)) {
+        List<EventFilterRule> eventFilterRules =
+            alert.getFilteringRules().getRules().stream().sorted().collect(Collectors.toList());
+        List<EventFilterRule> eventFilterRulesNew =
+            eventSub.getFilteringRules().getRules().stream().sorted().collect(Collectors.toList());
+        if (eventFilterRules.equals(eventFilterRulesNew)) {
+          isExist = true;
+          break;
+        }
+      }
+    }
+    return isExist;
   }
 
   @PUT

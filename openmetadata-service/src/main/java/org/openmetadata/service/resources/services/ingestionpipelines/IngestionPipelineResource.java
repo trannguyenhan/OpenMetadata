@@ -58,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openmetadata.schema.ServiceEntityInterface;
 import org.openmetadata.schema.api.data.RestoreEntity;
 import org.openmetadata.schema.api.services.ingestionPipelines.CreateIngestionPipeline;
+import org.openmetadata.schema.entity.services.DatabaseService;
 import org.openmetadata.schema.entity.services.ingestionPipelines.IngestionPipeline;
 import org.openmetadata.schema.entity.services.ingestionPipelines.PipelineServiceClientResponse;
 import org.openmetadata.schema.entity.services.ingestionPipelines.PipelineStatus;
@@ -74,10 +75,7 @@ import org.openmetadata.sdk.PipelineServiceClient;
 import org.openmetadata.service.Entity;
 import org.openmetadata.service.OpenMetadataApplicationConfig;
 import org.openmetadata.service.clients.pipeline.PipelineServiceClientFactory;
-import org.openmetadata.service.jdbi3.CollectionDAO;
-import org.openmetadata.service.jdbi3.IngestionPipelineRepository;
-import org.openmetadata.service.jdbi3.ListFilter;
-import org.openmetadata.service.jdbi3.MetadataServiceRepository;
+import org.openmetadata.service.jdbi3.*;
 import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.EntityResource;
 import org.openmetadata.service.secrets.SecretsManager;
@@ -86,6 +84,7 @@ import org.openmetadata.service.secrets.masker.EntityMaskerFactory;
 import org.openmetadata.service.security.AuthorizationException;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.security.policyevaluator.OperationContext;
+import org.openmetadata.service.util.EntityUtil;
 import org.openmetadata.service.util.EntityUtil.Fields;
 import org.openmetadata.service.util.IngestionPipelineUtils;
 import org.openmetadata.service.util.OpenMetadataConnectionBuilder;
@@ -109,6 +108,7 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
   private OpenMetadataApplicationConfig openMetadataApplicationConfig;
   private final MetadataServiceRepository metadataServiceRepository;
   static final String FIELDS = FIELD_OWNER;
+  private final DatabaseServiceRepository databaseServiceRepository;
 
   @Override
   public IngestionPipeline addHref(UriInfo uriInfo, IngestionPipeline ingestionPipeline) {
@@ -120,6 +120,7 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
   public IngestionPipelineResource(CollectionDAO dao, Authorizer authorizer) {
     super(IngestionPipeline.class, new IngestionPipelineRepository(dao), authorizer);
     this.metadataServiceRepository = new MetadataServiceRepository(dao);
+    this.databaseServiceRepository = new DatabaseServiceRepository(dao);
   }
 
   @Override
@@ -405,11 +406,44 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
       })
   public Response create(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateIngestionPipeline create) {
+    //    boolean isExist = isExist(create);
+    //    if (isExist) {
+    //      return Response.status(CONFLICT)
+    //          .type(MediaType.APPLICATION_JSON_TYPE)
+    //          .entity(new ErrorMessage(CONFLICT.getStatusCode(), CatalogExceptionMessage.ENTITY_ALREADY_EXISTS))
+    //          .build();
+    //    }
     IngestionPipeline ingestionPipeline = getIngestionPipeline(create, securityContext.getUserPrincipal().getName());
     Response response = create(uriInfo, securityContext, ingestionPipeline);
     validateProfileSample(ingestionPipeline);
     decryptOrNullify(securityContext, (IngestionPipeline) response.getEntity(), false);
     return response;
+  }
+
+  private boolean isExist(CreateIngestionPipeline create) {
+    boolean isExist = false;
+
+    if (Entity.DATABASE_SERVICE.equals(create.getService().getType())) {
+      DatabaseService databaseService =
+          databaseServiceRepository.find(create.getService().getId(), Include.NON_DELETED);
+
+      ListFilter filter =
+          new ListFilter()
+              .addQueryParam("pipelineType", create.getPipelineType().value())
+              .addQueryParam("service", databaseService.getName());
+      EntityUtil.Fields fields = EntityUtil.Fields.EMPTY_FIELDS;
+
+      List<IngestionPipeline> pipelines = repository.listAll(fields, filter);
+      isExist =
+          pipelines.stream()
+              .anyMatch(
+                  ingestionPipeline ->
+                      ingestionPipeline
+                          .getAirflowConfig()
+                          .getScheduleInterval()
+                          .equals(create.getAirflowConfig().getScheduleInterval()));
+    }
+    return isExist;
   }
 
   @PATCH

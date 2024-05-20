@@ -10,6 +10,8 @@ import static org.openmetadata.service.Entity.TEST_CASE;
 import static org.openmetadata.service.Entity.USER;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -159,7 +161,9 @@ public class AlertsRuleEvaluator {
       // in case the entity is not test case return since the filter doesn't apply
       return true;
     }
-    for (FieldChange fieldChange : changeEvent.getChangeDescription().getFieldsUpdated()) {
+    List<FieldChange> fieldChanges = new ArrayList<>(changeEvent.getChangeDescription().getFieldsUpdated());
+    fieldChanges.addAll(changeEvent.getChangeDescription().getFieldsAdded());
+    for (FieldChange fieldChange : fieldChanges) {
       if (fieldChange.getName().equals("testCaseResult") && fieldChange.getNewValue() != null) {
         TestCaseResult testCaseResult = (TestCaseResult) fieldChange.getNewValue();
         TestCaseStatus status = testCaseResult.getTestCaseStatus();

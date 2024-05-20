@@ -1,0 +1,8 @@
+{
+    "name": "R22SpaceOnly",
+    "displayName": "R22 Column values have only whitespace characters",
+    "description": "Column values have only whitespace characters",
+    "entityType": "COLUMN",
+    "testPlatforms": ["OpenMetadata"],
+    "parameterDefinition": []
+}

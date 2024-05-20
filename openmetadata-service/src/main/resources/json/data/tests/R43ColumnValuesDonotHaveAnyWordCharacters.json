@@ -1,0 +1,8 @@
+{
+    "name": "R43ColumnValuesDonotHaveAnyWordCharacters",
+    "displayName": "R43 Column values donot have any word characters",
+    "description": "Column values donot have any word characters",
+    "entityType": "COLUMN",
+    "testPlatforms": ["OpenMetadata"],
+    "parameterDefinition": []
+}

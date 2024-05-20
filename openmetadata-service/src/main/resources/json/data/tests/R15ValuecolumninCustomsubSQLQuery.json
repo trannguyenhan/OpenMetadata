@@ -1,0 +1,21 @@
+
+{
+    "name": "R15ValuecolumninCustomsubSQLQuery",
+    "displayName": "R15 Value column in Custom sub SQL Query",
+    "description": "Test if column in ( SELECT code FROM stg_invalid_text WHERE name = 'Tu vo nghia' )  error",
+    "entityType": "COLUMN",
+    "testPlatforms": [
+        "OpenMetadata"
+    ],
+    "supportedDataTypes": [],
+    "parameterDefinition": [
+        {
+            "name": "sqlExpression",
+            "displayName": "SQL Expression",
+            "dataType": "STRING",
+            "description": "SQL to get the set. for example SELECT code FROM stg_invalid_text WHERE name = 'Tu vo nghia'",
+            "required": true,
+            "optionValues": []
+        }
+    ]
+}
