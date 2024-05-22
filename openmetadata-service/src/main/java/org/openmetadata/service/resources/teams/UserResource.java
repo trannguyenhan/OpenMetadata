@@ -89,7 +89,6 @@ import org.openmetadata.schema.auth.LoginRequest;
 import org.openmetadata.schema.auth.LogoutRequest;
 import org.openmetadata.schema.auth.PasswordResetRequest;
 import org.openmetadata.schema.auth.PersonalAccessToken;
-import org.openmetadata.schema.auth.RegistrationRequest;
 import org.openmetadata.schema.auth.RevokePersonalTokenRequest;
 import org.openmetadata.schema.auth.RevokeTokenRequest;
 import org.openmetadata.schema.auth.SSOAuthMechanism;
@@ -805,23 +804,23 @@ public class UserResource extends EntityResource<User, UserRepository> {
     return restoreEntity(uriInfo, securityContext, restore.getId());
   }
 
-  @POST
-  @Path("/signup")
-  @Operation(
-      operationId = "registerUser",
-      summary = "Register User",
-      description = "Register a new User",
-      responses = {
-        @ApiResponse(responseCode = "200", description = "The user "),
-        @ApiResponse(responseCode = "400", description = "Bad request")
-      })
-  public Response registerNewUser(@Context UriInfo uriInfo, @Valid RegistrationRequest create) throws IOException {
-    User registeredUser = authHandler.registerUser(create);
-    authHandler.sendEmailVerification(uriInfo, registeredUser);
-    return Response.status(Response.Status.CREATED.getStatusCode(), "User Registration Successful.")
-        .entity(registeredUser)
-        .build();
-  }
+  //  @POST
+  //  @Path("/signup")
+  //  @Operation(
+  //      operationId = "registerUser",
+  //      summary = "Register User",
+  //      description = "Register a new User",
+  //      responses = {
+  //        @ApiResponse(responseCode = "200", description = "The user "),
+  //        @ApiResponse(responseCode = "400", description = "Bad request")
+  //      })
+  //  public Response registerNewUser(@Context UriInfo uriInfo, @Valid RegistrationRequest create) throws IOException {
+  //    User registeredUser = authHandler.registerUser(create);
+  //    authHandler.sendEmailVerification(uriInfo, registeredUser);
+  //    return Response.status(Response.Status.CREATED.getStatusCode(), "User Registration Successful.")
+  //        .entity(registeredUser)
+  //        .build();
+  //  }
 
   @PUT
   @Path("/registrationConfirmation")

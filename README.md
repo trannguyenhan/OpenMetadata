@@ -95,3 +95,9 @@ A HUGE THANK YOU to all our supporters!
 
 ## License
 OpenMetadata is released under [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+## Build local
+
+```bash
+
+```

@@ -11,7 +11,7 @@
  *  limitations under the License.
  */
 
-import { Button, Col, Divider, Form, Input, Row, Typography } from 'antd';
+import { Button, Col, /* Divider,*/ Form, Input, Row, Typography } from 'antd';
 import classNames from 'classnames';
 import { useAuthContext } from 'components/authentication/auth-provider/AuthProvider';
 import { useBasicAuth } from 'components/authentication/auth-provider/basic-auth.provider';
@@ -189,9 +189,9 @@ const SigninPage = () => {
     setLoading(false);
   };
 
-  const onClickSignUp = () => history.push(ROUTES.REGISTER);
-
-  const onClickForgotPassword = () => history.push(ROUTES.FORGOT_PASSWORD);
+  // const onClickSignUp = () => history.push(ROUTES.REGISTER);
+  //
+  // const onClickForgotPassword = () => history.push(ROUTES.FORGOT_PASSWORD);
 
   return (
     <div className="d-flex flex-col h-full bg-white">
@@ -273,35 +273,35 @@ const SigninPage = () => {
                     </div>
                   </div>
                 )}
-                <div className="mt-8" onClick={onClickForgotPassword}>
-                  <Typography.Link underline data-testid="forgot-password">
-                    {t('label.forgot-password')}
-                  </Typography.Link>
-                </div>
+                {/* <div className="mt-8" onClick={onClickForgotPassword}>*/}
+                {/*  <Typography.Link underline data-testid="forgot-password">*/}
+                {/*    {t('label.forgot-password')}*/}
+                {/*  </Typography.Link>*/}
+                {/* </div>*/}
 
-                {(authConfig?.enableSelfSignUp || isAuthProviderLDAP) && (
-                  <>
-                    <Divider className="w-min-0 mt-8 mb-12 justify-center">
-                      <Typography.Text className="text-sm" type="secondary">
-                        {t('label.or-lowercase')}
-                      </Typography.Text>
-                    </Divider>
+                {/* {(authConfig?.enableSelfSignUp || isAuthProviderLDAP) && (*/}
+                {/*  <>*/}
+                {/*    <Divider className="w-min-0 mt-8 mb-12 justify-center">*/}
+                {/*      <Typography.Text className="text-sm" type="secondary">*/}
+                {/*        {t('label.or-lowercase')}*/}
+                {/*      </Typography.Text>*/}
+                {/*    </Divider>*/}
 
-                    <div className="mt-4 d-flex flex-center">
-                      <Typography.Text className="mr-4">
-                        {t('message.new-to-the-platform')}
-                      </Typography.Text>
-                      <Button
-                        data-testid="signup"
-                        type="link"
-                        onClick={onClickSignUp}>
-                        {t('label.create-entity', {
-                          entity: t('label.account'),
-                        })}
-                      </Button>
-                    </div>
-                  </>
-                )}
+                {/*    <div className="mt-4 d-flex flex-center">*/}
+                {/*      <Typography.Text className="mr-4">*/}
+                {/*        {t('message.new-to-the-platform')}*/}
+                {/*      </Typography.Text>*/}
+                {/*      <Button*/}
+                {/*        data-testid="signup"*/}
+                {/*        type="link"*/}
+                {/*        onClick={onClickSignUp}>*/}
+                {/*        {t('label.create-entity', {*/}
+                {/*          entity: t('label.account'),*/}
+                {/*        })}*/}
+                {/*      </Button>*/}
+                {/*    </div>*/}
+                {/*  </>*/}
+                {/* )}*/}
               </div>
             ) : (
               <div className="">{getSignInButton()}</div>

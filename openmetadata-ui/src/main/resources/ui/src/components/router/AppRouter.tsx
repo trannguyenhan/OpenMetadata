@@ -32,17 +32,17 @@ const PageNotFound = withSuspenseFallback(
   React.lazy(() => import('pages/page-not-found/PageNotFound'))
 );
 
-const ForgotPassword = withSuspenseFallback(
-  React.lazy(() => import('pages/forgot-password/forgot-password.component'))
-);
+// const ForgotPassword = withSuspenseFallback(
+//   React.lazy(() => import('pages/forgot-password/forgot-password.component'))
+// );
 
 const ResetPassword = withSuspenseFallback(
   React.lazy(() => import('pages/reset-password/reset-password.component'))
 );
 
-const BasicSignupPage = withSuspenseFallback(
-  React.lazy(() => import('pages/signup/BasicSignup.component'))
-);
+// const BasicSignupPage = withSuspenseFallback(
+//   React.lazy(() => import('pages/signup/BasicSignup.component'))
+// );
 
 const AppRouter = () => {
   const location = useLocation();
@@ -135,12 +135,12 @@ const AppRouter = () => {
 
         {isBasicAuthProvider && (
           <>
-            <Route exact component={BasicSignupPage} path={ROUTES.REGISTER} />
-            <Route
-              exact
-              component={ForgotPassword}
-              path={ROUTES.FORGOT_PASSWORD}
-            />
+            {/* <Route exact component={BasicSignupPage} path={ROUTES.REGISTER} />*/}
+            {/* <Route*/}
+            {/*  exact*/}
+            {/*  component={ForgotPassword}*/}
+            {/*  path={ROUTES.FORGOT_PASSWORD}*/}
+            {/* />*/}
             <Route
               exact
               component={ResetPassword}
