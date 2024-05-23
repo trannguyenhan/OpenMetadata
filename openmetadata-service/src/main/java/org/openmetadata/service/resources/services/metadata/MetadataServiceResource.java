@@ -13,9 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.json.JsonPatch;
 import javax.validation.Valid;
@@ -250,6 +248,17 @@ public class MetadataServiceResource
           @DefaultValue("non-deleted")
           Include include) {
     MetadataService metadataService = getByNameInternal(uriInfo, securityContext, name, fieldsParam, include);
+      if(metadataService.getName().toUpperCase(Locale.ROOT).equals("OPENMETADATA")){
+          try{
+              LinkedHashMap<String, Object> configConnection = (LinkedHashMap<String, Object>) metadataService.getConnection().getConfig();
+              LinkedHashMap<String, Object> elasticConfig = (LinkedHashMap<String, Object>) configConnection.get("elasticsSearch");
+              LinkedHashMap<String, Object> valueElasticConfig = (LinkedHashMap<String, Object>) elasticConfig.get("config");
+              valueElasticConfig.remove("es_password");
+              valueElasticConfig.remove("es_username");
+          } catch (Exception e){
+              e.printStackTrace();
+          }
+      }
     return decryptOrNullify(securityContext, metadataService);
   }
 
