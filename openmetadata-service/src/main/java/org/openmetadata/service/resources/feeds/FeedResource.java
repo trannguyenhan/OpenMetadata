@@ -392,6 +392,7 @@ public class FeedResource {
       @Parameter(description = "Id of the thread", schema = @Schema(type = "string")) @PathParam("id") String id,
       @Valid CreatePost createPost)
       throws IOException {
+    createPost.setFrom(securityContext.getUserPrincipal().getName());
     Post post = getPost(createPost);
     Thread thread = addHref(uriInfo, dao.addPostToThread(id, post, securityContext.getUserPrincipal().getName()));
     return Response.created(thread.getHref()).entity(thread).build();
