@@ -654,7 +654,8 @@ const TeamDetailsV1 = ({
 
   const extraDropdownContent: ItemType[] = useMemo(
     () => [
-      ...(isGroupType ? [] : IMPORT_EXPORT_MENU_ITEM),
+      // ...(isGroupType ? [] : IMPORT_EXPORT_MENU_ITEM),
+      ...(true ? [] : IMPORT_EXPORT_MENU_ITEM),
       ...(!currentTeam.parents?.[0]?.deleted && currentTeam.deleted
         ? [
             {
@@ -978,11 +979,13 @@ const TeamDetailsV1 = ({
                 )}
               </Space>
             ) : (
-              <ManageButton
-                canDelete={false}
-                entityName={currentTeam.fullyQualifiedName ?? currentTeam.name}
-                extraDropdownContent={[...IMPORT_EXPORT_MENU_ITEM]}
-              />
+              // <ManageButton
+              //   canDelete={false}
+              //   entityName={currentTeam.fullyQualifiedName ?? currentTeam.name}
+              //   extraDropdownContent={[...IMPORT_EXPORT_MENU_ITEM]}
+              // />
+              <Space>
+              </Space>
             )}
           </div>
           {emailElement}

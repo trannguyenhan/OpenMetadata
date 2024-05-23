@@ -67,6 +67,7 @@ import org.openmetadata.service.jdbi3.TeamRepository;
 import org.openmetadata.service.jdbi3.TeamRepository.TeamCsv;
 import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.EntityResource;
+import org.openmetadata.service.security.AuthorizationException;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.util.EntityUtil;
 import org.openmetadata.service.util.JsonUtils;
@@ -450,22 +451,23 @@ public class TeamResource extends EntityResource<Team, TeamRepository> {
     return JsonUtils.pojoToJson(TeamCsv.DOCUMENTATION);
   }
 
-  @GET
-  @Path("/name/{name}/export")
-  @Produces(MediaType.TEXT_PLAIN)
-  @Valid
-  @Operation(
-      operationId = "exportTeams",
-      summary = "Export teams in CSV format",
-      responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Exported csv with teams information",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
-      })
-  public String exportCsv(@Context SecurityContext securityContext, @PathParam("name") String name) throws IOException {
-    return exportCsvInternal(securityContext, name);
-  }
+  //  @GET
+  //  @Path("/name/{name}/export")
+  //  @Produces(MediaType.TEXT_PLAIN)
+  //  @Valid
+  //  @Operation(
+  //      operationId = "exportTeams",
+  //      summary = "Export teams in CSV format",
+  //      responses = {
+  //        @ApiResponse(
+  //            responseCode = "200",
+  //            description = "Exported csv with teams information",
+  //            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+  //      })
+  //  public String exportCsv(@Context SecurityContext securityContext, @PathParam("name") String name) throws
+  // IOException {
+  //    return exportCsvInternal(securityContext, name);
+  //  }
 
   @PUT
   @Path("/name/{name}/import")
