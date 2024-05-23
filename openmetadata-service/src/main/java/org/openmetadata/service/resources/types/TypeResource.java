@@ -62,6 +62,7 @@ import org.openmetadata.service.jdbi3.ListFilter;
 import org.openmetadata.service.jdbi3.TypeRepository;
 import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.EntityResource;
+import org.openmetadata.service.security.AuthorizationException;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.security.policyevaluator.OperationContext;
 import org.openmetadata.service.util.EntityUtil.Fields;
@@ -226,6 +227,12 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
           @QueryParam("include")
           @DefaultValue("non-deleted")
           Include include) {
+    try {
+      authorizer.authorizeAdmin(securityContext);
+    } catch (Exception e){
+      throw new AuthorizationException(e.getMessage());
+    }
+
     return getByNameInternal(uriInfo, securityContext, name, fieldsParam, include);
   }
 
@@ -313,6 +320,12 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
                         @ExampleObject("[" + "{op:remove, path:/a}," + "{op:add, path: /b, value: val}" + "]")
                       }))
           JsonPatch patch) {
+    try {
+      authorizer.authorizeAdmin(securityContext);
+    } catch (Exception e){
+      throw new AuthorizationException(e.getMessage());
+    }
+
     return patchInternal(uriInfo, securityContext, id, patch);
   }
 
@@ -329,6 +342,12 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
       })
   public Response createOrUpdate(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateType create) {
+    try {
+      authorizer.authorizeAdmin(securityContext);
+    } catch (Exception e){
+      throw new AuthorizationException(e.getMessage());
+    }
+
     Type type = getType(create, securityContext.getUserPrincipal().getName());
     return createOrUpdate(uriInfo, securityContext, type);
   }
