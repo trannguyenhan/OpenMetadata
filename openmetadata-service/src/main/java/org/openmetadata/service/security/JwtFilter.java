@@ -64,8 +64,23 @@ public class JwtFilter implements ContainerRequestFilter {
   private boolean enforcePrincipalDomain;
   private AuthProvider providerType;
   public static final List<String> EXCLUDED_ENDPOINTS =
+      //      List.of(
+      //          "v1/system/config",
+      //          "v1/users/signup",
+      //          "v1/system/version",
+      //          "v1/users/registrationConfirmation",
+      //          "v1/users/resendRegistrationToken",
+      //          "v1/users/generatePasswordResetLink",
+      //          "v1/users/password/reset",
+      //          "v1/users/checkEmailInUse",
+      //          "v1/users/login",
+      //          "v1/users/refresh");
+
       List.of(
-          "v1/system/config",
+          "v1/system/config/jwks",
+          "v1/system/config/authorizer",
+          "v1/system/config/customLogoConfiguration",
+          "v1/system/config/auth",
           "v1/users/signup",
           "v1/system/version",
           "v1/users/registrationConfirmation",
@@ -110,7 +125,7 @@ public class JwtFilter implements ContainerRequestFilter {
   @Override
   public void filter(ContainerRequestContext requestContext) {
     UriInfo uriInfo = requestContext.getUriInfo();
-    if (EXCLUDED_ENDPOINTS.stream().anyMatch(endpoint -> uriInfo.getPath().contains(endpoint))) {
+    if (EXCLUDED_ENDPOINTS.stream().anyMatch(endpoint -> uriInfo.getPath().equalsIgnoreCase(endpoint))) {
       return;
     }
 

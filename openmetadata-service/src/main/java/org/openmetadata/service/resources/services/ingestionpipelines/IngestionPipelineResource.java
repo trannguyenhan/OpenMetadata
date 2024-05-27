@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.json.JsonPatch;
 import javax.validation.Valid;
@@ -473,6 +474,18 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
     return response;
   }
 
+  private boolean isValidCron(String cronExpress) {
+    String cronRegex =
+        "^([0-5]?\\d|\\*)\\s+([01]?\\d|2[0-3]|\\*)\\s+([01]?\\d|2[0-9]|3[01]|\\*)\\s+(0?[1-9]|1[0-2]|\\*|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\s+([0-7]|\\*|sun|mon|tue|wed|thu|fri|sat)$";
+    Pattern cronPattern = Pattern.compile(cronRegex, Pattern.CASE_INSENSITIVE);
+
+    if (cronExpress == null || cronExpress.trim().isEmpty()) {
+      return false;
+    }
+
+    return cronPattern.matcher(cronExpress).matches();
+  }
+
   @PUT
   @Operation(
       operationId = "createOrUpdateIngestionPipeline",
@@ -488,6 +501,10 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
       })
   public Response createOrUpdate(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateIngestionPipeline update) {
+    if (!isValidCron(update.getAirflowConfig().getScheduleInterval())) {
+      throw new IllegalArgumentException("schedule interval must be a cron expression");
+    }
+
     IngestionPipeline ingestionPipeline = getIngestionPipeline(update, securityContext.getUserPrincipal().getName());
     unmask(ingestionPipeline);
     Response response = createOrUpdate(uriInfo, securityContext, ingestionPipeline);

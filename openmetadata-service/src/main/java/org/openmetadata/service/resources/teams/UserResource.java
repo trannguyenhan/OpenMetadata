@@ -21,7 +21,6 @@ import static org.openmetadata.schema.api.teams.CreateUser.CreatePasswordType.AD
 import static org.openmetadata.schema.auth.ChangePasswordRequest.RequestType.SELF;
 import static org.openmetadata.schema.entity.teams.AuthenticationMechanism.AuthType.BASIC;
 import static org.openmetadata.schema.entity.teams.AuthenticationMechanism.AuthType.JWT;
-import static org.openmetadata.service.exception.CatalogExceptionMessage.EMAIL_SENDING_ISSUE;
 import static org.openmetadata.service.jdbi3.UserRepository.AUTH_MECHANISM_FIELD;
 import static org.openmetadata.service.security.jwt.JWTTokenGenerator.getExpiryDate;
 
@@ -867,37 +866,39 @@ public class UserResource extends EntityResource<User, UserRepository> {
         .build();
   }
 
-  @POST
-  @Path("/generatePasswordResetLink")
-  @Operation(
-      operationId = "generatePasswordResetLink",
-      summary = "Generate Password Reset Link",
-      description = "Generate Password Reset Link",
-      responses = {
-        @ApiResponse(responseCode = "200", description = "The user "),
-        @ApiResponse(responseCode = "400", description = "Bad request")
-      })
-  public Response generateResetPasswordLink(@Context UriInfo uriInfo, @Valid EmailRequest request) {
-    String userName = request.getEmail().split("@")[0];
-    User registeredUser;
-    try {
-      registeredUser =
-          repository.getByName(uriInfo, userName, new Fields(Set.of(USER_PROTECTED_FIELDS), USER_PROTECTED_FIELDS));
-    } catch (EntityNotFoundException ex) {
-      LOG.error(
-          "[GeneratePasswordReset] Got Error while fetching user : {},  error message {}", userName, ex.getMessage());
-      return Response.status(Response.Status.OK).entity("Please check your mail to for Reset Password Link.").build();
-    }
-    try {
-      // send a mail to the User with the Update
-      authHandler.sendPasswordResetLink(
-          uriInfo, registeredUser, EmailUtil.getPasswordResetSubject(), EmailUtil.PASSWORD_RESET_TEMPLATE_FILE);
-    } catch (Exception ex) {
-      LOG.error("Error in sending mail for reset password" + ex.getMessage());
-      return Response.status(424).entity(new ErrorMessage(424, EMAIL_SENDING_ISSUE)).build();
-    }
-    return Response.status(Response.Status.OK).entity("Please check your mail to for Reset Password Link.").build();
-  }
+  //  @POST
+  //  @Path("/generatePasswordResetLink")
+  //  @Operation(
+  //      operationId = "generatePasswordResetLink",
+  //      summary = "Generate Password Reset Link",
+  //      description = "Generate Password Reset Link",
+  //      responses = {
+  //        @ApiResponse(responseCode = "200", description = "The user "),
+  //        @ApiResponse(responseCode = "400", description = "Bad request")
+  //      })
+  //  public Response generateResetPasswordLink(@Context UriInfo uriInfo, @Valid EmailRequest request) {
+  //    String userName = request.getEmail().split("@")[0];
+  //    User registeredUser;
+  //    try {
+  //      registeredUser =
+  //          repository.getByName(uriInfo, userName, new Fields(Set.of(USER_PROTECTED_FIELDS), USER_PROTECTED_FIELDS));
+  //    } catch (EntityNotFoundException ex) {
+  //      LOG.error(
+  //          "[GeneratePasswordReset] Got Error while fetching user : {},  error message {}", userName,
+  // ex.getMessage());
+  //      return Response.status(Response.Status.OK).entity("Please check your mail to for Reset Password
+  // Link.").build();
+  //    }
+  //    try {
+  //      // send a mail to the User with the Update
+  //      authHandler.sendPasswordResetLink(
+  //          uriInfo, registeredUser, EmailUtil.getPasswordResetSubject(), EmailUtil.PASSWORD_RESET_TEMPLATE_FILE);
+  //    } catch (Exception ex) {
+  //      LOG.error("Error in sending mail for reset password" + ex.getMessage());
+  //      return Response.status(424).entity(new ErrorMessage(424, EMAIL_SENDING_ISSUE)).build();
+  //    }
+  //    return Response.status(Response.Status.OK).entity("Please check your mail to for Reset Password Link.").build();
+  //  }
 
   @POST
   @Path("/password/reset")

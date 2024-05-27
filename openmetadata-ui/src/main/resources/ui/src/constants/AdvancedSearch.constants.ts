@@ -197,11 +197,11 @@ export const autocomplete: (args: {
           values: uniq(resp).map(({ text, _source }) => {
             // set displayName or name if index is type of user or team and both.
             // else set the text
-            const name =
+            let name =
               isUserAndTeamSearchIndex && !isUndefined(_source)
                 ? _source?.displayName || _source.name
                 : text;
-
+            name = (name??'').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replaceAll("<",'').replaceAll(">",'');
             return {
               value: name,
               title: name,
@@ -222,8 +222,10 @@ export const autocomplete: (args: {
 
         return {
           values: buckets.map((bucket) => ({
-            value: bucket.key,
-            title: bucket.label ?? bucket.key,
+            // value: bucket.key,
+            // title: bucket.label ?? bucket.key,
+            value: (bucket.key??'').replace(/&lt;/g, '<').replace(/&gt;/g, '>'),
+            title: ((bucket.label ?? bucket.key)??'').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replaceAll("<",'').replaceAll(">",''),
           })),
           hasMore: false,
         };

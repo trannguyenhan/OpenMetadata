@@ -18,11 +18,7 @@ import static org.openmetadata.service.Entity.TEAM;
 import static org.openmetadata.service.Entity.USER;
 import static org.openmetadata.service.security.policyevaluator.CompiledRule.parseExpression;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.BadRequestException;
@@ -34,11 +30,7 @@ import org.openmetadata.schema.entity.events.FilteringRules;
 import org.openmetadata.schema.entity.events.SubscriptionStatus;
 import org.openmetadata.schema.entity.services.ingestionPipelines.PipelineStatusType;
 import org.openmetadata.schema.tests.type.TestCaseStatus;
-import org.openmetadata.schema.type.ChangeEvent;
-import org.openmetadata.schema.type.EventType;
-import org.openmetadata.schema.type.Function;
-import org.openmetadata.schema.type.ParamAdditionalContext;
-import org.openmetadata.schema.type.SubscriptionFilterOperation;
+import org.openmetadata.schema.type.*;
 import org.openmetadata.service.Entity;
 import org.openmetadata.service.events.subscription.email.EmailPublisher;
 import org.openmetadata.service.events.subscription.gchat.GChatPublisher;
@@ -51,7 +43,7 @@ import org.openmetadata.service.resources.CollectionRegistry;
 import org.openmetadata.service.search.IndexUtil;
 import org.openmetadata.service.search.SearchIndexDefinition;
 import org.springframework.expression.Expression;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 
 @Slf4j
 public final class AlertUtil {
@@ -106,8 +98,10 @@ public final class AlertUtil {
     }
     Expression expression = parseExpression(condition);
     AlertsRuleEvaluator ruleEvaluator = new AlertsRuleEvaluator(null);
+    SimpleEvaluationContext context =
+        SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().withRootObject(ruleEvaluator).build();
     try {
-      return expression.getValue(ruleEvaluator, clz);
+      return expression.getValue(context, clz);
     } catch (Exception exception) {
       // Remove unnecessary class details in the exception message
       String message = exception.getMessage().replaceAll("on type .*$", "").replaceAll("on object .*$", "");
@@ -175,15 +169,30 @@ public final class AlertUtil {
       boolean result;
       String completeCondition = buildCompleteCondition(alertFilterRules);
       AlertsRuleEvaluator ruleEvaluator = new AlertsRuleEvaluator(changeEvent);
-      StandardEvaluationContext evaluationContext = new StandardEvaluationContext(ruleEvaluator);
       Expression expression = parseExpression(completeCondition);
-      result = Boolean.TRUE.equals(expression.getValue(evaluationContext, Boolean.class));
+      SimpleEvaluationContext context =
+          SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().withRootObject(ruleEvaluator).build();
+      result = Boolean.TRUE.equals(expression.getValue(context, Boolean.class));
       LOG.debug("Alert evaluated as Result : {}", result);
       return result;
     } else {
       return true;
     }
   }
+  //  public static boolean evaluateAlertConditions(ChangeEvent changeEvent, List<EventFilterRule> alertFilterRules) {
+  //    if (!alertFilterRules.isEmpty()) {
+  //      boolean result;
+  //      String completeCondition = buildCompleteCondition(alertFilterRules);
+  //      AlertsRuleEvaluator ruleEvaluator = new AlertsRuleEvaluator(changeEvent);
+  //      StandardEvaluationContext evaluationContext = new StandardEvaluationContext(ruleEvaluator);
+  //      Expression expression = parseExpression(completeCondition);
+  //      result = Boolean.TRUE.equals(expression.getValue(evaluationContext, Boolean.class));
+  //      LOG.debug("Alert evaluated as Result : {}", result);
+  //      return result;
+  //    } else {
+  //      return true;
+  //    }
+  //  }
 
   public static String buildCompleteCondition(List<EventFilterRule> alertFilterRules) {
     StringBuilder builder = new StringBuilder();

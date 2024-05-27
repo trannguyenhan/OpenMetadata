@@ -229,7 +229,7 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
           Include include) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -322,7 +322,7 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
           JsonPatch patch) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -344,7 +344,7 @@ public class TypeResource extends EntityResource<Type, TypeRepository> {
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateType create) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 

@@ -196,7 +196,7 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
           String after) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -231,7 +231,7 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
           String fieldsParam) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -267,7 +267,7 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
           String fieldsParam) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -293,7 +293,7 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateEventSubscription request) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
@@ -369,10 +369,10 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       })
   public Response createOrUpdateEventSubscription(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateEventSubscription create) {
-    try{
-        authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
-        throw new AuthorizationException(e.getMessage());
+    try {
+      authorizer.authorizeAdmin(securityContext);
+    } catch (Exception e) {
+      throw new AuthorizationException(e.getMessage());
     }
 
     // Only one Creation is allowed for Data Insight
@@ -509,9 +509,9 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       @Parameter(description = "Id of the Event Subscription", schema = @Schema(type = "UUID")) @PathParam("id")
           UUID id)
       throws InterruptedException, SchedulerException {
-    try{
+    try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 

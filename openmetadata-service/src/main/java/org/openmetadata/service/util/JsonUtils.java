@@ -41,14 +41,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonPatch;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
+import javax.json.*;
 import lombok.extern.slf4j.Slf4j;
 import org.openmetadata.annotations.ExposedField;
 import org.openmetadata.annotations.IgnoreMaskedFieldAnnotationIntrospector;
@@ -209,6 +202,9 @@ public final class JsonUtils {
     List<JsonObject> removeOperations = new ArrayList<>();
     List<JsonObject> otherOperations = new ArrayList<>();
 
+    // ignore XSS
+    array = sanitizeInputJsonArray(array);
+
     array.forEach(
         entry -> {
           JsonObject jsonObject = entry.asJsonObject();
@@ -275,6 +271,52 @@ public final class JsonUtils {
 
     // Apply sortedPatch
     return sortedPatch.apply(targetJson);
+  }
+
+  public static JsonArray sanitizeInputJsonArray(JsonArray jsonArray) {
+    JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+
+    for (JsonValue jsonValue : jsonArray) {
+      if (jsonValue.getValueType().equals(JsonValue.ValueType.OBJECT)) {
+        JsonObject jsonObject = jsonValue.asJsonObject();
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+        // prevent XSS
+        for (String key : jsonObject.keySet()) {
+          if (key.equals("value")) {
+            String newValue = ValidatorUtil.sanitizeInput(jsonObject.getString(key));
+            jsonObjectBuilder.add(key, newValue);
+          } else {
+            jsonObjectBuilder.add(key, jsonObject.get(key));
+          }
+        }
+
+        // validate email
+        //        if (jsonObject.getString("path").equals("/email")) {
+        //          String valueEmail = jsonObject.getString("value");
+        //          String emailRegex =
+        // "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        //          Pattern emailPattern = Pattern.compile(emailRegex);
+        //          Matcher matcher = emailPattern.matcher(valueEmail);
+        //          if (!matcher.matches()) {
+        //            throw new IllegalArgumentException("Email pattern not correct!");
+        //          }
+        //        }
+
+        if (jsonObject.getString("path").equals("/email")
+            || jsonObject.getString("path").equals("/isBot")
+            || jsonObject.getString("path").equals("/isAdmin")
+            || jsonObject.getString("path").equals("/isEmailVerified")) {
+          continue;
+        }
+
+        jsonArrayBuilder.add(jsonObjectBuilder.build());
+      } else {
+        jsonArrayBuilder.add(jsonValue);
+      }
+    }
+
+    return jsonArrayBuilder.build();
   }
 
   public static <T> T applyPatch(T original, JsonPatch patch, Class<T> clz) {

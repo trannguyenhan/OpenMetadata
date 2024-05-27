@@ -11,7 +11,7 @@
  *  limitations under the License.
  */
 
-import { RedocStandalone } from '@deuex-solutions/redoc';
+// import { RedocStandalone } from '@deuex-solutions/redoc';
 import React from 'react';
 import './swagger.less';
 
@@ -20,15 +20,16 @@ const SwaggerPage = () => {
   //   specUrl="https://raw.githubusercontent.com/deuex-solutions/redoc/master/demo/petstore.json"
   // />);
   return (
-    <div
-      className="container-fluid"
-      data-testid="fluid-container"
-      id="doc-container">
-      <RedocStandalone
-        options={{ enableConsole: true }}
-        specUrl="./swagger.json"
-      />
-    </div>
+    // <div
+    //   className="container-fluid"
+    //   data-testid="fluid-container"
+    //   id="doc-container">
+    //   <RedocStandalone
+    //     options={{ enableConsole: true }}
+    //     specUrl="./swagger.json"
+    //   />
+    // </div>
+      <div></div>
   );
 };
 

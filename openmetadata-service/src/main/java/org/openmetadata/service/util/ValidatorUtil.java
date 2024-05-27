@@ -27,4 +27,11 @@ public class ValidatorUtil {
         : Arrays.toString(
             violations.stream().map(v -> String.format("%s %s", v.getPropertyPath(), v.getMessage())).toArray());
   }
+
+  public static String sanitizeInput(String input) {
+    if (input == null) {
+      return null;
+    }
+    return input.replaceAll("<", "").replaceAll(">", "").replaceAll("\"", "").replaceAll("'", "").replaceAll("/", "");
+  }
 }

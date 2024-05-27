@@ -378,9 +378,9 @@ public class TeamResource extends EntityResource<Team, TeamRepository> {
                       }))
           JsonPatch patch) {
     try {
-        authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
-        throw new AuthorizationException(e.getMessage());
+      authorizer.authorizeAdmin(securityContext);
+    } catch (Exception e) {
+      throw new AuthorizationException(e.getMessage());
     }
 
     return patchInternal(uriInfo, securityContext, id, patch);
@@ -410,7 +410,7 @@ public class TeamResource extends EntityResource<Team, TeamRepository> {
       @Parameter(description = "Id of the team", schema = @Schema(type = "UUID")) @PathParam("id") UUID id) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new AuthorizationException(e.getMessage());
     }
 
