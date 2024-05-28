@@ -283,10 +283,14 @@ public final class JsonUtils {
 
         // prevent XSS
         for (String key : jsonObject.keySet()) {
-          if (key.equals("value")) {
-            String newValue = ValidatorUtil.sanitizeInput(jsonObject.getString(key));
-            jsonObjectBuilder.add(key, newValue);
-          } else {
+          try {
+            if (key.equals("value")) {
+              String newValue = ValidatorUtil.sanitizeInput(jsonObject.getString(key));
+              jsonObjectBuilder.add(key, newValue);
+            } else {
+              jsonObjectBuilder.add(key, jsonObject.get(key));
+            }
+          } catch (Exception e) {
             jsonObjectBuilder.add(key, jsonObject.get(key));
           }
         }

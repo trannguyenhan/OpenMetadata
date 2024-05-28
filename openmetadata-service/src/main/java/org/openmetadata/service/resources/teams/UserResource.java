@@ -713,11 +713,11 @@ public class UserResource extends EntityResource<User, UserRepository> {
           JsonPatch patch) {
     try {
       authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e){
+    } catch (Exception e) {
       // if not admin
       User userEdit = this.repository.get(uriInfo, id, this.repository.getPatchFields());
-      if(!securityContext.getUserPrincipal().getName().equals(userEdit.getName())){
-          throw new AuthorizationException(e.getMessage());
+      if (!securityContext.getUserPrincipal().getName().equals(userEdit.getName())) {
+        throw new AuthorizationException(e.getMessage());
       }
     }
 
@@ -953,23 +953,25 @@ public class UserResource extends EntityResource<User, UserRepository> {
     return Response.status(OK).entity("Password Updated Successfully").build();
   }
 
-//  @POST
-//  @Path("/checkEmailInUse")
-//  @Operation(
-//      operationId = "checkEmailInUse",
-//      summary = "Check if a email is already in use",
-//      description = "Check if a email is already in use",
-//      responses = {
-//        @ApiResponse(
-//            responseCode = "200",
-//            description = "Return true or false",
-//            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
-//        @ApiResponse(responseCode = "400", description = "Bad request")
-//      })
-//  public Response checkEmailInUse(@Valid EmailRequest request) {
-//    boolean emailExists = repository.checkEmailAlreadyExists(request.getEmail());
-//    return Response.status(Response.Status.OK).entity(emailExists).build();
-//  }
+  @POST
+  @Path("/checkEmailInUse")
+  @Operation(
+      operationId = "checkEmailInUse",
+      summary = "Check if a email is already in use",
+      description = "Check if a email is already in use",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Return true or false",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request")
+      })
+  public Response checkEmailInUse(
+      @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid EmailRequest request) {
+    authorizer.authorizeAdmin(securityContext);
+    boolean emailExists = repository.checkEmailAlreadyExists(request.getEmail());
+    return Response.status(Response.Status.OK).entity(emailExists).build();
+  }
 
   @POST
   @Path("/checkEmailVerified")
