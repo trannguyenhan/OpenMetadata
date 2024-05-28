@@ -64,6 +64,7 @@ import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.util.JsonUtils;
 import org.openmetadata.service.util.RestUtil;
 import org.openmetadata.service.util.ResultList;
+import org.openmetadata.service.util.ValidatorUtil;
 
 @Path("/v1/glossaries")
 @Tag(name = "Glossaries", description = "A `Glossary` is collection of hierarchical `GlossaryTerms`.")
@@ -264,6 +265,9 @@ public class GlossaryResource extends EntityResource<Glossary, GlossaryRepositor
       })
   public Response create(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateGlossary create) {
+    create.setDisplayName(ValidatorUtil.sanitizeInput(create.getDisplayName()));
+    create.setDescription(ValidatorUtil.sanitizeInput(create.getDescription()));
+
     Glossary glossary = getGlossary(create, securityContext.getUserPrincipal().getName());
     return create(uriInfo, securityContext, glossary);
   }

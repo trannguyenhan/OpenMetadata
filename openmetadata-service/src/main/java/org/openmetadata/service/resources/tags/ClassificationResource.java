@@ -60,6 +60,7 @@ import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.EntityResource;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.util.ResultList;
+import org.openmetadata.service.util.ValidatorUtil;
 
 @Slf4j
 @Path("/v1/classifications")
@@ -267,6 +268,8 @@ public class ClassificationResource extends EntityResource<Classification, Class
       })
   public Response create(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateClassification create) {
+    create.setDisplayName(ValidatorUtil.sanitizeInput(create.getDisplayName()));
+    create.setDescription(ValidatorUtil.sanitizeInput(create.getDescription()));
     Classification category = getClassification(create, securityContext);
     return create(uriInfo, securityContext, category);
   }
