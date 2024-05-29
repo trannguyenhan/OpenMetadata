@@ -377,12 +377,6 @@ public class TeamResource extends EntityResource<Team, TeamRepository> {
                         @ExampleObject("[" + "{op:remove, path:/a}," + "{op:add, path: /b, value: val}" + "]")
                       }))
           JsonPatch patch) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
-
     return patchInternal(uriInfo, securityContext, id, patch);
   }
 
@@ -408,12 +402,6 @@ public class TeamResource extends EntityResource<Team, TeamRepository> {
           @DefaultValue("false")
           boolean hardDelete,
       @Parameter(description = "Id of the team", schema = @Schema(type = "UUID")) @PathParam("id") UUID id) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
-
     return delete(uriInfo, securityContext, id, recursive, hardDelete);
   }
 

@@ -179,9 +179,9 @@ public class MetadataServiceResource
     }
 
     List<MetadataService> metadataServicesDataTemp = new ArrayList<>();
-    for(MetadataService metadataService: metadataServices.getData()){
-        OpenMetadataServiceUtil.removeESInfo(metadataService);
-        metadataServicesDataTemp.add(metadataService);
+    for (MetadataService metadataService : metadataServices.getData()) {
+      OpenMetadataServiceUtil.removeESInfo(metadataService);
+      metadataServicesDataTemp.add(metadataService);
     }
 
     metadataServices.setData(metadataServicesDataTemp);
