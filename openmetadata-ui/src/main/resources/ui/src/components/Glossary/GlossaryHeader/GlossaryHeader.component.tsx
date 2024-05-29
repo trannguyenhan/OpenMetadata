@@ -192,7 +192,9 @@ const GlossaryHeader = ({
   }, [selectedData]);
 
   const manageButtonContent: ItemType[] = [
-    ...(isGlossary
+    ...(
+        // isGlossary
+        false
       ? ([
           {
             label: (

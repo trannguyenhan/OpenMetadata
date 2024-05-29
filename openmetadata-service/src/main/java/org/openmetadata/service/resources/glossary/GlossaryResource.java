@@ -389,57 +389,57 @@ public class GlossaryResource extends EntityResource<Glossary, GlossaryRepositor
     return JsonUtils.pojoToJson(GlossaryCsv.DOCUMENTATION);
   }
 
-  @GET
-  @Path("/name/{name}/export")
-  @Produces(MediaType.TEXT_PLAIN)
-  @Valid
-  @Operation(
-      operationId = "exportGlossary",
-      summary = "Export glossary in CSV format",
-      responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Exported csv with glossary terms",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
-      })
-  public String exportCsv(
-      @Context SecurityContext securityContext,
-      @Parameter(description = "Name of the glossary", schema = @Schema(type = "string")) @PathParam("name")
-          String name)
-      throws IOException {
-    return exportCsvInternal(securityContext, name);
-  }
+//  @GET
+//  @Path("/name/{name}/export")
+//  @Produces(MediaType.TEXT_PLAIN)
+//  @Valid
+//  @Operation(
+//      operationId = "exportGlossary",
+//      summary = "Export glossary in CSV format",
+//      responses = {
+//        @ApiResponse(
+//            responseCode = "200",
+//            description = "Exported csv with glossary terms",
+//            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+//      })
+//  public String exportCsv(
+//      @Context SecurityContext securityContext,
+//      @Parameter(description = "Name of the glossary", schema = @Schema(type = "string")) @PathParam("name")
+//          String name)
+//      throws IOException {
+//    return exportCsvInternal(securityContext, name);
+//  }
 
-  @PUT
-  @Path("/name/{name}/import")
-  @Consumes(MediaType.TEXT_PLAIN)
-  @Valid
-  @Reindex(jobName = "reIndexGlossary", entities = "glossaryTerm")
-  @Operation(
-      operationId = "importGlossary",
-      summary = "Import glossary terms from CSV to create, and update glossary terms",
-      responses = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Import result",
-            content =
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CsvImportResult.class)))
-      })
-  public CsvImportResult importCsv(
-      @Context SecurityContext securityContext,
-      @Parameter(description = "Name of the glossary", schema = @Schema(type = "string")) @PathParam("name")
-          String name,
-      @Parameter(
-              description =
-                  "Dry-run when true is used for validating the CSV without really importing it. (default=true)",
-              schema = @Schema(type = "boolean"))
-          @DefaultValue("true")
-          @QueryParam("dryRun")
-          boolean dryRun,
-      String csv)
-      throws IOException {
-    return importCsvInternal(securityContext, name, csv, dryRun);
-  }
+//  @PUT
+//  @Path("/name/{name}/import")
+//  @Consumes(MediaType.TEXT_PLAIN)
+//  @Valid
+//  @Reindex(jobName = "reIndexGlossary", entities = "glossaryTerm")
+//  @Operation(
+//      operationId = "importGlossary",
+//      summary = "Import glossary terms from CSV to create, and update glossary terms",
+//      responses = {
+//        @ApiResponse(
+//            responseCode = "200",
+//            description = "Import result",
+//            content =
+//                @Content(mediaType = "application/json", schema = @Schema(implementation = CsvImportResult.class)))
+//      })
+//  public CsvImportResult importCsv(
+//      @Context SecurityContext securityContext,
+//      @Parameter(description = "Name of the glossary", schema = @Schema(type = "string")) @PathParam("name")
+//          String name,
+//      @Parameter(
+//              description =
+//                  "Dry-run when true is used for validating the CSV without really importing it. (default=true)",
+//              schema = @Schema(type = "boolean"))
+//          @DefaultValue("true")
+//          @QueryParam("dryRun")
+//          boolean dryRun,
+//      String csv)
+//      throws IOException {
+//    return importCsvInternal(securityContext, name, csv, dryRun);
+//  }
 
   private Glossary getGlossary(CreateGlossary create, String user) {
     return copy(new Glossary(), create, user)
