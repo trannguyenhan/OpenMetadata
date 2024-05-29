@@ -225,7 +225,7 @@ public abstract class EntityResource<T extends EntityInterface, K extends Entity
 
   public Response patchInternal(UriInfo uriInfo, SecurityContext securityContext, UUID id, JsonPatch patch) {
     OperationContext operationContext = new OperationContext(entityType, patch);
-    if(operationContext.getPatch().toJsonArray().size() == 0){
+    if (operationContext.getPatch().toJsonArray().size() == 0) {
       throw new IllegalArgumentException("This request need body");
     }
     authorizer.authorize(securityContext, operationContext, getResourceContextById(id));
