@@ -48,6 +48,7 @@ import org.openmetadata.annotations.IgnoreMaskedFieldAnnotationIntrospector;
 import org.openmetadata.annotations.MaskedField;
 import org.openmetadata.annotations.OnlyExposedFieldAnnotationIntrospector;
 import org.openmetadata.schema.entity.Type;
+import org.openmetadata.schema.entity.teams.User;
 import org.openmetadata.schema.entity.type.Category;
 import org.openmetadata.service.exception.UnhandledServerException;
 
@@ -203,7 +204,7 @@ public final class JsonUtils {
     List<JsonObject> otherOperations = new ArrayList<>();
 
     // ignore XSS
-    array = sanitizeInputJsonArray(array);
+    array = sanitizeInputJsonArray(original, array);
 
     array.forEach(
         entry -> {
@@ -273,7 +274,7 @@ public final class JsonUtils {
     return sortedPatch.apply(targetJson);
   }
 
-  public static JsonArray sanitizeInputJsonArray(JsonArray jsonArray) {
+  public static JsonArray sanitizeInputJsonArray(Object original, JsonArray jsonArray) {
     JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
 
     for (JsonValue jsonValue : jsonArray) {
@@ -307,11 +308,18 @@ public final class JsonUtils {
         //          }
         //        }
 
-        if (jsonObject.getString("path").equals("/email")
-            || jsonObject.getString("path").equals("/isBot")
-            || jsonObject.getString("path").equals("/isAdmin")
-            || jsonObject.getString("path").equals("/isEmailVerified")) {
-          continue;
+        if(original instanceof User){
+          if((((User) original).getFullyQualifiedName()).equals("ingestion-bot")){
+            continue;
+          }
+
+          if(jsonObject.getString("path").equals("/email")
+                  || jsonObject.getString("path").equals("/isBot")
+                  || jsonObject.getString("path").equals("/isAdmin")
+                  || jsonObject.getString("path").equals("/isEmailVerified")
+          ) {
+            continue;
+          }
         }
 
         jsonArrayBuilder.add(jsonObjectBuilder.build());
