@@ -60,11 +60,7 @@ import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.services.ServiceEntityResource;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.security.policyevaluator.OperationContext;
-import org.openmetadata.service.util.EntityUtil;
-import org.openmetadata.service.util.JsonUtils;
-import org.openmetadata.service.util.OpenMetadataConnectionBuilder;
-import org.openmetadata.service.util.RestUtil;
-import org.openmetadata.service.util.ResultList;
+import org.openmetadata.service.util.*;
 
 @Slf4j
 @Path("/v1/services/metadataServices")
@@ -181,6 +177,14 @@ public class MetadataServiceResource
     } else {
       metadataServices = repository.listAfter(uriInfo, fields, filter, limitParam, after);
     }
+
+    List<MetadataService> metadataServicesDataTemp = new ArrayList<>();
+    for(MetadataService metadataService: metadataServices.getData()){
+        OpenMetadataServiceUtil.removeESInfo(metadataService);
+        metadataServicesDataTemp.add(metadataService);
+    }
+
+    metadataServices.setData(metadataServicesDataTemp);
     return addHref(uriInfo, decryptOrNullify(securityContext, metadataServices));
   }
 
@@ -214,6 +218,7 @@ public class MetadataServiceResource
           @DefaultValue("non-deleted")
           Include include) {
     MetadataService metadataService = getInternal(uriInfo, securityContext, id, fieldsParam, include);
+    OpenMetadataServiceUtil.removeESInfo(metadataService);
     return decryptOrNullify(securityContext, metadataService);
   }
 
@@ -248,19 +253,7 @@ public class MetadataServiceResource
           @DefaultValue("non-deleted")
           Include include) {
     MetadataService metadataService = getByNameInternal(uriInfo, securityContext, name, fieldsParam, include);
-    if (metadataService.getName().toUpperCase(Locale.ROOT).equals("OPENMETADATA")) {
-      try {
-        LinkedHashMap<String, Object> configConnection =
-            (LinkedHashMap<String, Object>) metadataService.getConnection().getConfig();
-        LinkedHashMap<String, Object> elasticConfig =
-            (LinkedHashMap<String, Object>) configConnection.get("elasticsSearch");
-        LinkedHashMap<String, Object> valueElasticConfig = (LinkedHashMap<String, Object>) elasticConfig.get("config");
-        valueElasticConfig.remove("es_password");
-        valueElasticConfig.remove("es_username");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+    OpenMetadataServiceUtil.removeESInfo(metadataService);
     return decryptOrNullify(securityContext, metadataService);
   }
 
