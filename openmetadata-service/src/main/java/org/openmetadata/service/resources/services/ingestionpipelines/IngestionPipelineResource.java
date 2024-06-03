@@ -832,6 +832,8 @@ public class IngestionPipelineResource extends EntityResource<IngestionPipeline,
           @NonNull
           @QueryParam("endTs")
           Long endTs) {
+    OperationContext operationContext = new OperationContext(entityType, MetadataOperation.VIEW_ALL);
+    authorizer.authorize(securityContext, operationContext, getResourceContextByName(fqn));
     return repository.listPipelineStatus(fqn, startTs, endTs);
   }
 

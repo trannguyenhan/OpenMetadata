@@ -308,16 +308,19 @@ public final class JsonUtils {
         //          }
         //        }
 
-        if(original instanceof User){
-          if((((User) original).getFullyQualifiedName()).equals("ingestion-bot")){
+        if (original instanceof User) {
+          if (((User) original).getIsBot()) {
             continue;
           }
 
-          if(jsonObject.getString("path").equals("/email")
-                  || jsonObject.getString("path").equals("/isBot")
-                  || jsonObject.getString("path").equals("/isAdmin")
-                  || jsonObject.getString("path").equals("/isEmailVerified")
-          ) {
+          if ((((User) original).getFullyQualifiedName()).equals("ingestion-bot")) {
+            continue;
+          }
+
+          if (jsonObject.getString("path").equals("/email")
+              || jsonObject.getString("path").equals("/isBot")
+              || jsonObject.getString("path").equals("/isAdmin")
+              || jsonObject.getString("path").equals("/isEmailVerified")) {
             continue;
           }
         }
