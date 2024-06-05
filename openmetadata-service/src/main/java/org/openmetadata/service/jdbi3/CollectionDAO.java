@@ -2996,6 +2996,67 @@ public interface CollectionDAO {
 
     @SqlQuery("SELECT count(*) FROM <table> WHERE id IN (<testCaseIds>)")
     int countOfTestCases(@Define("table") String table, @BindList("testCaseIds") List<String> testCaseIds);
+
+    @SqlQuery(
+        "with \n"
+            + "list_test_case as (\n"
+            + "\tselect tc.*\n"
+            + "\tfrom test_case tc \n"
+            + "\twhere tc.deleted is false\n"
+            + "),\n"
+            + "test_case_result as (\n"
+            + "\tselect * \n"
+            + "\tfrom entity_extension_time_series\n"
+            + "\twhere jsonschema = 'testCaseResult'\n"
+            + "),\n"
+            + "test_case_result_latest_timestamp as (\n"
+            + "\tselect distinct entityfqnhash as entityfqnhash, max(\"timestamp\") as max_timestamp\n"
+            + "\tfrom test_case_result \n"
+            + "\twhere entityfqnhash in (\n"
+            + "\t\tselect fqnhash from list_test_case\n"
+            + "\t)\n"
+            + "\tgroup by entityfqnhash\n"
+            + "),\n"
+            + "test_case_result_latest as (\n"
+            + "\tselect tc.*\n"
+            + "\tfrom test_case_result tc\n"
+            + "\tinner join test_case_result_latest_timestamp tct on tc.entityfqnhash = tct.entityfqnhash and tc.timestamp = tct.max_timestamp\n"
+            + ")\n"
+            + "select tcr.json\n"
+            + "from list_test_case tc \n"
+            + "left join test_case_result_latest tcr on tc.fqnhash = tcr.entityfqnhash")
+    List<String> getAllTestCaseResult();
+
+    @SqlQuery(
+        "with \n"
+            + "list_test_case as (\n"
+            + "\tselect tc.*\n"
+            + "\tfrom test_case tc \n"
+            + "\tinner join entity_relationship er on tc.id = er.toid  \n"
+            + "\twhere er.fromid = :testSuiteId and tc.deleted is false\n"
+            + "),\n"
+            + "test_case_result as (\n"
+            + "\tselect * \n"
+            + "\tfrom entity_extension_time_series\n"
+            + "\twhere jsonschema = 'testCaseResult'\n"
+            + "),\n"
+            + "test_case_result_latest_timestamp as (\n"
+            + "\tselect distinct entityfqnhash as entityfqnhash, max(\"timestamp\") as max_timestamp\n"
+            + "\tfrom test_case_result \n"
+            + "\twhere entityfqnhash in (\n"
+            + "\t\tselect fqnhash from list_test_case\n"
+            + "\t)\n"
+            + "\tgroup by entityfqnhash\n"
+            + "),\n"
+            + "test_case_result_latest as (\n"
+            + "\tselect tc.*\n"
+            + "\tfrom test_case_result tc\n"
+            + "\tinner join test_case_result_latest_timestamp tct on tc.entityfqnhash = tct.entityfqnhash and tc.timestamp = tct.max_timestamp\n"
+            + ")\n"
+            + "select tcr.json\n"
+            + "from list_test_case tc \n"
+            + "left join test_case_result_latest tcr on tc.fqnhash = tcr.entityfqnhash")
+    List<String> getAllTestCaseResultFromTestSuite(@Bind("testSuiteId") String testSuiteId);
   }
 
   interface WebAnalyticEventDAO extends EntityDAO<WebAnalyticEvent> {

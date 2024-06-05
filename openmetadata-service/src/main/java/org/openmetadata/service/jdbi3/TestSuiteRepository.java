@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openmetadata.schema.entity.data.Table;
 import org.openmetadata.schema.tests.ResultSummary;
 import org.openmetadata.schema.tests.TestSuite;
+import org.openmetadata.schema.tests.type.TestCaseResult;
 import org.openmetadata.schema.tests.type.TestCaseStatus;
 import org.openmetadata.schema.tests.type.TestSummary;
 import org.openmetadata.schema.type.EntityReference;
@@ -85,10 +86,41 @@ public class TestSuiteRepository extends EntityRepository<TestSuite> {
     return testCaseSummary;
   }
 
+  private TestSummary buildTestSummaryFromListStringTestCase(List<String> lst) {
+    HashMap<String, Integer> testsSummary = new HashMap<>();
+    int total = lst.size();
+
+    for (String itm : lst) {
+      TestCaseResult rsl = JsonUtils.readValue(itm, TestCaseResult.class);
+      if (rsl == null || rsl.getTestCaseStatus() == null) {
+        continue;
+      }
+
+      if (testsSummary.containsKey(rsl.getTestCaseStatus().toString())) {
+        testsSummary.put(rsl.getTestCaseStatus().toString(), testsSummary.get(rsl.getTestCaseStatus().toString()) + 1);
+      } else {
+        testsSummary.put(rsl.getTestCaseStatus().toString(), 1);
+      }
+    }
+
+    return buildTestSummary(testsSummary, total);
+  }
+
+  private TestSummary getTestCasesExecutionSummaryV2() {
+    List<String> lst = daoCollection.testCaseDAO().getAllTestCaseResult();
+    return buildTestSummaryFromListStringTestCase(lst);
+  }
+
+  private TestSummary getTestCasesExecutionSummaryV2(TestSuite entity) {
+    List<String> lst = daoCollection.testCaseDAO().getAllTestCaseResultFromTestSuite(entity.getId().toString());
+    return buildTestSummaryFromListStringTestCase(lst);
+  }
+
   private TestSummary getTestCasesExecutionSummary(TestSuite entity) {
     if (entity.getTestCaseResultSummary().isEmpty()) return new TestSummary();
-    HashMap<String, Integer> testSummary = getResultSummary(entity);
-    return buildTestSummary(testSummary, entity.getTestCaseResultSummary().size());
+    //    HashMap<String, Integer> testSummary = getResultSummary(entity);
+    //    return buildTestSummary(testSummary, entity.getTestCaseResultSummary().size());
+    return getTestCasesExecutionSummaryV2(entity);
   }
 
   private TestSummary getTestCasesExecutionSummary(List<TestSuite> entities) {
@@ -110,10 +142,12 @@ public class TestSuiteRepository extends EntityRepository<TestSuite> {
   public TestSummary getTestSummary(UUID testSuiteId) {
     TestSummary testSummary;
     if (testSuiteId == null) {
-      ListFilter filter = new ListFilter();
-      filter.addQueryParam("testSuiteType", "executable");
-      List<TestSuite> testSuites = listAll(EntityUtil.Fields.EMPTY_FIELDS, filter);
-      testSummary = getTestCasesExecutionSummary(testSuites);
+      //      ListFilter filter = new ListFilter();
+      //      filter.addQueryParam("testSuiteType", "executable");
+      //      List<TestSuite> testSuites = listAll(EntityUtil.Fields.EMPTY_FIELDS, filter);
+      //      testSummary = getTestCasesExecutionSummary(testSuites);
+
+      testSummary = getTestCasesExecutionSummaryV2();
     } else {
       TestSuite testSuite = find(testSuiteId, Include.ALL);
       if (!Boolean.TRUE.equals(testSuite.getExecutable())) {
