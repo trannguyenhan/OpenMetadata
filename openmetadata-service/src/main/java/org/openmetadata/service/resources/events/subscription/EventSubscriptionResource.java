@@ -76,7 +76,6 @@ import org.openmetadata.service.resources.Collection;
 import org.openmetadata.service.resources.EntityResource;
 import org.openmetadata.service.search.IndexUtil;
 import org.openmetadata.service.search.SearchClient;
-import org.openmetadata.service.security.AuthorizationException;
 import org.openmetadata.service.security.Authorizer;
 import org.openmetadata.service.util.EntityUtil;
 import org.openmetadata.service.util.JsonUtils;
@@ -194,11 +193,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
               schema = @Schema(type = "string"))
           @QueryParam("after")
           String after) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     ListFilter filter = new ListFilter(null);
     return listInternal(uriInfo, securityContext, fieldsParam, filter, limitParam, before, after);
@@ -229,11 +228,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
               schema = @Schema(type = "string", example = FIELDS))
           @QueryParam("fields")
           String fieldsParam) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     return getInternal(uriInfo, securityContext, id, fieldsParam, null);
   }
@@ -265,11 +264,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
               schema = @Schema(type = "string", example = FIELDS))
           @QueryParam("fields")
           String fieldsParam) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     return getByNameInternal(uriInfo, securityContext, name, fieldsParam, null);
   }
@@ -291,11 +290,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       })
   public Response createEventSubscription(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateEventSubscription request) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     EventSubscription eventSub = getEventSubscription(request, securityContext.getUserPrincipal().getName());
     //    boolean isExist = isExist(eventSub);
@@ -369,11 +368,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       })
   public Response createOrUpdateEventSubscription(
       @Context UriInfo uriInfo, @Context SecurityContext securityContext, @Valid CreateEventSubscription create) {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     // Only one Creation is allowed for Data Insight
     if (create.getAlertType() == CreateEventSubscription.AlertType.DATA_INSIGHT_REPORT) {
@@ -509,11 +508,11 @@ public class EventSubscriptionResource extends EntityResource<EventSubscription,
       @Parameter(description = "Id of the Event Subscription", schema = @Schema(type = "UUID")) @PathParam("id")
           UUID id)
       throws InterruptedException, SchedulerException {
-    try {
-      authorizer.authorizeAdmin(securityContext);
-    } catch (Exception e) {
-      throw new AuthorizationException(e.getMessage());
-    }
+    //    try {
+    //      authorizer.authorizeAdmin(securityContext);
+    //    } catch (Exception e) {
+    //      throw new AuthorizationException(e.getMessage());
+    //    }
 
     Response response = delete(uriInfo, securityContext, id, true, true);
     EventSubscription deletedEntity = (EventSubscription) response.getEntity();

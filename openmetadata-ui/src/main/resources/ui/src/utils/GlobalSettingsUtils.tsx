@@ -194,19 +194,19 @@ export const getGlobalSettingsMenuWithPermission = (
       items: [
         {
           label: i18next.t('label.activity-feed-plural'),
-          isProtected: Boolean(isAdminUser),
+          isProtected: Boolean(true),
           key: 'notifications.activityFeeds',
           icon: <AllActivityIcon className="side-panel-icons" />,
         },
         {
           label: i18next.t('label.alert-plural'),
-          isProtected: Boolean(isAdminUser),
+          isProtected: Boolean(true),
           key: 'notifications.alerts',
           icon: <BellIcon className="side-panel-icons" />,
         },
         {
           label: i18next.t('label.data-insight-report'),
-          isProtected: Boolean(isAdminUser),
+          isProtected: Boolean(true),
           key: 'notifications.dataInsightReport',
           icon: <DataInsightReportIcon className="side-panel-icons" />,
         },

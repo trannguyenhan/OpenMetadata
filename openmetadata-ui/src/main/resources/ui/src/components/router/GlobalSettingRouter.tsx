@@ -250,10 +250,9 @@ const GlobalSettingRouter = () => {
         )}
       />
 
-      <AdminProtectedRoute
+      <Route
         exact
         component={DataInsightsSettingsPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.OPEN_METADATA,
           GlobalSettingOptions.DATA_INSIGHT
@@ -285,40 +284,36 @@ const GlobalSettingRouter = () => {
         path={getSettingCategoryPath(GlobalSettingsMenuCategory.SERVICES)}
       />
 
-      <AdminProtectedRoute
+      <Route
         exact
         component={AlertsPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.ALERTS
         )}
       />
 
-      <AdminProtectedRoute
+      <Route
         exact
         component={AddAlertPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.EDIT_ALERTS,
           true
         )}
       />
-      <AdminProtectedRoute
+      <Route
         exact
         component={AddAlertPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.ADD_ALERTS
         )}
       />
 
-      <AdminProtectedRoute
+      <Route
         exact
         component={AlertDetailsPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.ALERT,
@@ -326,38 +321,34 @@ const GlobalSettingRouter = () => {
         )}
       />
 
-      <AdminProtectedRoute
+      <Route
         exact
         component={AlertsActivityFeedPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.ACTIVITY_FEED
         )}
       />
-      <AdminProtectedRoute
+      <Route
         exact
         component={AddDataInsightReportAlert}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.ADD_DATA_INSIGHT_REPORT_ALERT
         )}
       />
-      <AdminProtectedRoute
+      <Route
         exact
         component={AddDataInsightReportAlert}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.EDIT_DATA_INSIGHT_REPORT_ALERT,
           true
         )}
       />
-      <AdminProtectedRoute
+      <Route
         exact
         component={AlertDataInsightReportPage}
-        hasPermission={false}
         path={getSettingPath(
           GlobalSettingsMenuCategory.NOTIFICATIONS,
           GlobalSettingOptions.DATA_INSIGHT_REPORT_ALERT

@@ -94,9 +94,9 @@ const AlertDataInsightReportPage = () => {
     return <Loader />;
   }
 
-  if (!isAdminUser) {
-    return <ErrorPlaceHolder type={ERROR_PLACEHOLDER_TYPE.PERMISSION} />;
-  }
+  // if (!isAdminUser) {
+  //   return <ErrorPlaceHolder type={ERROR_PLACEHOLDER_TYPE.PERMISSION} />;
+  // }
 
   if (isUndefined(dataInsightAlert)) {
     return (
